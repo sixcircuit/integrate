@@ -1,0 +1,17 @@
+Integrate is a simple continious integration script written in python,
+read the code, it's pretty straight forward, every repo get's a config file see integrate.conf.sample.
+it only works with node.js right now, but it would be easy to integrate anything you wanted.  
+the script start.py duplicates the directory passed in on the command line into the 'running' directory
+and runs the node script found in the config file that is in the root of the directory passed to the script
+if you rerun start.py with a directory that is already "running" it will stop node, re-duplicate the files,
+and rerun the node script.
+
+two caveats, you need a link to node in the root of the integrate directory, i use a symlink.
+the script tells if a "project" is already running based on the directory it's given, so
+../project/../project and ../project are two different projects as far as the script is concerned but you will get 
+folder name collisons in the working directory because they would both be named "project" and things probably get crazy
+
+KEEP THE LAST FOLDER NAME UNIQUE, AND USE THE SAME PATH TO RESTART YOUR JOBS. 
+
+It might seem shoddy, and I'll probably fix the script eventually but this works well for now.
+
