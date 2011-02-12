@@ -19,8 +19,12 @@ import subprocess
 import logging
 import ConfigParser
 
-LOG_FILENAME = 'integrate.log'
-logging.basicConfig(filename=LOG_FILENAME,level=logging.DEBUG)
+_IntegratePath = os.path.abspath(os.path.dirname(__file__))
+_IntegrateWorkingDirectory = _IntegratePath + "/running/"
+
+
+_LogFilePath = _IntegratePath + '/integrate.log'
+logging.basicConfig(filename=_LogFilePath,level=logging.DEBUG)
 
 # update repo
 
@@ -31,13 +35,10 @@ def main():
         exit()
 
     processesFileName = "processes.bin"
-    
 
-    integratePath = os.path.abspath(os.path.dirname(__file__))
-    integrateWorkingDirectory = integratePath + "/running/"
     
-    print(integratePath)
-    print(integrateWorkingDirectory)
+    print(_IntegratePath)
+    print(_IntegrateWorkingDirectory)
     
     sourceProjectPath = os.path.abspath(sys.argv[1])
     print(sourceProjectPath)
@@ -61,7 +62,7 @@ def main():
     except KeyError:
         currentProcess = None
     
-    workingProjectPath = integrateWorkingDirectory + getWorkingDirectoryName(sourceProjectPath)
+    workingProjectPath = _IntegrateWorkingDirectory + getWorkingDirectoryName(sourceProjectPath)
     runFilePath = workingProjectPath + "/" + projectExec
     
     if currentProcess is not None:
