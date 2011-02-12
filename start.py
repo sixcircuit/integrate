@@ -19,11 +19,14 @@ import subprocess
 import logging
 import ConfigParser
 
-_IntegratePath = os.path.abspath(os.path.dirname(__file__))
-_IntegrateWorkingDirectory = _IntegratePath + "/running/"
+_IntegratePath = os.path.abspath(os.path.dirname(__file__)) + "/"
+_IntegrateWorkingDirectory = _IntegratePath + "running/"
 
 
-_LogFilePath = _IntegratePath + '/integrate.log'
+_NodePath = _IntegratePath + 'node'
+
+
+_LogFilePath = _IntegratePath + 'integrate.log'
 logging.basicConfig(filename=_LogFilePath,level=logging.DEBUG)
 
 # update repo
@@ -79,7 +82,7 @@ def main():
     # start server
 
     if projectType.lower() == 'node':
-        currentProcess = runNode(runFilePath, workingProjectPath + "/stdout.stderr.node.integrate.log")
+        currentProcess = runNode(_NodePath, runFilePath, workingProjectPath + "/stdout.stderr.node.integrate.log")
     else:
         logging.error("Unsupported project type: " + projectType)
         exit()
@@ -94,13 +97,13 @@ def main():
 
 
 
-def runNode(pathToScript, pathToLogFile):
+def runNode(pathToNode, pathToScript, pathToLogFile):
     logging.info("Node running file: " + pathToScript)
     
     logFile = open(pathToLogFile, 'w')
     
     try:
-        proc = runProcess(['./node', pathToScript], logFile)
+        proc = runProcess([pathToNode, pathToScript], logFile)
     except OSError:
         logging.error("There was a problem starting the node process, make sure " + pathToScript + " is a valid path to a node script.")        
         exit()
