@@ -33,7 +33,7 @@ def main():
     processesFileName = "processes.bin"
     workingDirectory = "./running/"
 
-    sourceProjectPath = sys.argv[1]
+    sourceProjectPath = os.path.abspath(sys.argv[1])
     
     if sourceProjectPath[-1] != "/":
         sourceProjectPath = sourceProjectPath + "/"
