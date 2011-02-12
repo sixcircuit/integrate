@@ -31,8 +31,14 @@ def main():
         exit()
 
     processesFileName = "processes.bin"
-    workingDirectory = "./running/"
+    
 
+    integratePath = os.path.dirname(__file__)
+    integrateWorkingDirectory = integratePath + "/running/"
+    
+    print(integratePath)
+    print(integrateWorkingDirectory)
+    
     sourceProjectPath = os.path.abspath(sys.argv[1])
     
     if sourceProjectPath[-1] != "/":
@@ -54,7 +60,7 @@ def main():
     except KeyError:
         currentProcess = None
     
-    workingProjectPath = workingDirectory + getWorkingDirectoryName(sourceProjectPath)
+    workingProjectPath = integrateWorkingDirectory + getWorkingDirectoryName(sourceProjectPath)
     runFilePath = workingProjectPath + "/" + projectExec
     
     if currentProcess is not None:
