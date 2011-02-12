@@ -22,6 +22,8 @@ import ConfigParser
 _IntegratePath = os.path.abspath(os.path.dirname(__file__)) + "/"
 _IntegrateWorkingDirectory = _IntegratePath + "running/"
 
+_IntegrateProcessesFilePath = _IntegratePath + "processes.bin"
+
 
 _NodePath = _IntegratePath + 'node'
 
@@ -36,15 +38,12 @@ def main():
     if len(sys.argv) == 1:
         print 'usage: start.py [path to dir with integrate.conf]'
         exit()
-
-    processesFileName = "processes.bin"
-
     
-    print(_IntegratePath)
-    print(_IntegrateWorkingDirectory)
+    logging.debug("Integrate Path: " + _IntegratePath)
+    logging.debug("Integrate Working Directory: " + _IntegrateWorkingDirectory)
     
     sourceProjectPath = os.path.abspath(sys.argv[1])
-    print(sourceProjectPath)
+    logging.info("Current Project Path: " + sourceProjectPath)
     
     if sourceProjectPath[-1] != "/":
         sourceProjectPath = sourceProjectPath + "/"
@@ -55,8 +54,7 @@ def main():
     projectType, projectExec = getConfig(configFilePath)
     logging.info("Current Project: ProjectType: " + projectType + " ProjectExec: " + projectExec)
 
-
-    processes = getProcesses(processesFileName)
+    processes = getProcesses(_IntegrateProcessesFilePath)
 
     logging.info("Processes currently running: " + str(processes))
     
@@ -93,7 +91,7 @@ def main():
     
     processes[sourceProjectPath] = currentProcess
 
-    saveProcesses(processesFileName, processes)
+    saveProcesses(_IntegrateProcessesFilePath, processes)
 
 
 
