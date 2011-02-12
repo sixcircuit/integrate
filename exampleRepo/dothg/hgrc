@@ -1,0 +1,5 @@
+[ui]
+username = Kendrick Taylor <kendrick@chickrx.com>
+
+[hooks]
+changegroup = .hg/hooks/chgrouphook.sh
