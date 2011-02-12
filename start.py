@@ -33,13 +33,14 @@ def main():
     processesFileName = "processes.bin"
     
 
-    integratePath = os.path.dirname(__file__)
+    integratePath = os.path.abspath(os.path.dirname(__file__))
     integrateWorkingDirectory = integratePath + "/running/"
     
     print(integratePath)
     print(integrateWorkingDirectory)
     
     sourceProjectPath = os.path.abspath(sys.argv[1])
+    print(sourceProjectPath)
     
     if sourceProjectPath[-1] != "/":
         sourceProjectPath = sourceProjectPath + "/"
