@@ -22,13 +22,13 @@ import ConfigParser
 _IntegratePath = os.path.abspath(os.path.dirname(__file__)) + "/"
 _IntegrateWorkingDirectory = _IntegratePath + "running/"
 
-_IntegrateProcessesFilePath = _IntegratePath + "processes.bin"
+_IntegrateProcessesFilePath = _IntegrateWorkingDirectory + "processes.bin"
 
 
 _NodePath = _IntegratePath + 'node'
 
 
-_LogFilePath = _IntegratePath + 'integrate.log'
+_LogFilePath = _IntegrateWorkingDirectory + 'integrate.log'
 logging.basicConfig(filename=_LogFilePath,level=logging.DEBUG)
 
 # update repo
