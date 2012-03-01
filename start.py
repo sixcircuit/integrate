@@ -22,6 +22,9 @@ import ConfigParser
 _IntegratePath = os.path.abspath(os.path.dirname(__file__)) + "/"
 _IntegrateWorkingDirectory = _IntegratePath + "running/"
 
+if not os.path.exists(_IntegrateWorkingDirectory):
+    os.mkdir(_IntegrateWorkingDirectory)
+
 _IntegrateProcessesFilePath = _IntegrateWorkingDirectory + "processes.bin"
 
 
@@ -38,45 +41,45 @@ def main():
     if len(sys.argv) == 1:
         print 'usage: start.py [path to dir with integrate.conf]'
         exit()
-    
+
     logging.debug("Integrate Path: " + _IntegratePath)
     logging.debug("Integrate Working Directory: " + _IntegrateWorkingDirectory)
-    
+
     sourceProjectPath = os.path.abspath(sys.argv[1])
     logging.info("Current Project Path: " + sourceProjectPath)
-    
+
     if sourceProjectPath[-1] != "/":
         sourceProjectPath = sourceProjectPath + "/"
-    
+
     configFilePath = sourceProjectPath + 'integrate.conf'
     logging.info('Reading config file:' + configFilePath)
-    
+
     projectType, projectExec = getConfig(configFilePath)
     logging.info("Current Project: ProjectType: " + projectType + " ProjectExec: " + projectExec)
 
     processes = getProcesses(_IntegrateProcessesFilePath)
 
     logging.info("Processes currently running: " + str(processes))
-    
+
     try:
         currentProcess = processes[sourceProjectPath]
     except KeyError:
         currentProcess = None
-    
+
     workingProjectPath = _IntegrateWorkingDirectory + getWorkingDirectoryName(sourceProjectPath)
     runFilePath = workingProjectPath + "/" + projectExec
-    
+
     if currentProcess is not None:
         # stop server
         os.kill(currentProcess['pid'], signal.SIGKILL)
-        
+
     # delete working dir if it exists
     if os.path.exists(workingProjectPath):
         shutil.rmtree(workingProjectPath)
-        
+
     # copy repo to working dir
     shutil.copytree(sourceProjectPath, workingProjectPath, True)
- 
+
     # start server
 
     if projectType.lower() == 'node':
@@ -84,11 +87,11 @@ def main():
     else:
         logging.error("Unsupported project type: " + projectType)
         exit()
-    
+
     currentProcess['runFilePath'] = runFilePath
-    
+
     logging.info('new proc created: ' + str(currentProcess))
-    
+
     processes[sourceProjectPath] = currentProcess
 
     saveProcesses(_IntegrateProcessesFilePath, processes)
@@ -97,22 +100,22 @@ def main():
 
 def runNode(pathToNode, pathToScript, pathToLogFile):
     logging.info("Node running file: " + pathToScript)
-    
+
     logFile = open(pathToLogFile, 'w')
-    
+
     try:
         proc = runProcess([pathToNode, pathToScript], logFile)
     except OSError:
-        logging.error("There was a problem starting the node process, make sure " + pathToScript + " is a valid path to a node script.")        
+        logging.error("There was a problem starting the node process, make sure " + pathToScript + " is a valid path to a node script.")
         exit()
-        
+
     return({ 'pid' : proc.pid })
-    
+
 def getConfig(configFilePath):
-    
-    projectConfig = ConfigParser.RawConfigParser() 
+
+    projectConfig = ConfigParser.RawConfigParser()
     projectConfig.read(configFilePath)
-    
+
     try:
         projectType = projectConfig.get('project', 'type')
         projectExec = projectConfig.get('project', 'executable')
@@ -122,7 +125,7 @@ def getConfig(configFilePath):
     except ConfigParser.NoOptionError as e:
         logging.error('There was a problem with your config file. You were missing at least one option we require. Error: ' + str(e))
         exit()
-        
+
     return(projectType, projectExec)
 
 
@@ -130,9 +133,9 @@ def getConfig(configFilePath):
 def getWorkingDirectoryName(projectPath):
     # it blows up getting the config file if it's not a valid directory
     # way before it gets here
-    
+
     projectPath, lastDir = os.path.split(projectPath)
-    
+
     if lastDir == '':
         projectPath, lastDir = os.path.split(projectPath)
     if lastDir != '.' and lastDir != '..':
@@ -151,16 +154,16 @@ def saveProcesses(pickleFileName, processes):
 
 
 def getProcesses(pickleFileName):
-    
+
     try:
         inPickleFile = file(pickleFileName, "r")
     except IOError:
         return({})
-    
+
     processes = pickle.load(inPickleFile)
 
     inPickleFile.close()
-    
+
     return(processes)
 
 def runProcess(psData, fileToPipe):
